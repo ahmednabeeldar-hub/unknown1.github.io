@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Alert</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #050505;
+      color: #ff3333;
+      font-family: "Courier New", monospace;
+      overflow: hidden;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .page.active {
+      display: grid;
+    }
+
+    .warning-box {
+      width: min(95%, 760px);
+      padding: 28px;
+      border: 2px solid #ff2222;
+      background: rgba(30, 0, 0, 0.95);
+      box-shadow:
+        0 0 15px #ff0000,
+        inset 0 0 25px rgba(255, 0, 0, 0.15);
+      text-align: center;
+      animation: warningPulse 1s infinite alternate;
+    }
+
+    .warning-icon {
+      font-size: 64px;
+      animation: shake 0.25s infinite alternate;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: clamp(2rem, 8vw, 5rem);
+      text-transform: uppercase;
+      text-shadow: 0 0 15px red;
+    }
+
+    .danger {
+      color: #ff5555;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .status {
+      margin: 25px 0;
+      padding: 16px;
+      min-height: 155px;
+      border: 1px solid #772222;
+      background: #080000;
+      color: #ff7777;
+      text-align: left;
+      line-height: 1.7;
+    }
+
+    .status-line::before {
+      content: "> ";
+      color: #ff2222;
+    }
+
+    .progress-container {
+      height: 18px;
+      margin: 20px 0;
+      border: 1px solid #ff3333;
+      background: #180000;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #ff2222;
+      box-shadow: 0 0 12px red;
+      transition: width 0.5s ease;
+    }
+
+    button {
+      padding: 14px 26px;
+      border: none;
+      background: #ff2222;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff0000;
+    }
+
+    button:hover {
+      background: #fff;
+      color: #900;
+    }
+
+    .prank-box {
+      width: min(95%, 650px);
+      padding: 45px 25px;
+      border: 2px solid #39ff88;
+      background: #03140a;
+      color: #39ff88;
+      text-align: center;
+      box-shadow: 0 0 30px #00ff66;
+    }
+
+    .prank-box h2 {
+      margin-top: 0;
+      font-size: clamp(2rem, 8vw, 4rem);
+    }
+
+    .prank-box p {
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .prank-box button {
+      margin-top: 18px;
+      background: #39ff88;
+      color: #001b0a;
+      box-shadow: 0 0 15px #00ff66;
+    }
+
+    @keyframes warningPulse {
+      from {
+        box-shadow:
+          0 0 12px #ff0000,
+          inset 0 0 15px rgba(255, 0, 0, 0.1);
+      }
+
+      to {
+        box-shadow:
+          0 0 35px #ff0000,
+          inset 0 0 35px rgba(255, 0, 0, 0.25);
+      }
+    }
+
+    @keyframes shake {
+      from {
+        transform: rotate(-4deg);
+      }
+
+      to {
+        transform: rotate(4deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Fake warning page -->
+  <section id="warningPage" class="page active">
+    <div class="warning-box">
+      <div class="warning-icon">⚠</div>
+
+      <h1>Phone Hacked</h1>
+
+      <p class="danger">
+        Unauthorized activity has been detected on this device.
+      </p>
+
+      <div class="status">
+        <div id="line1" class="status-line">Initializing security scan...</div>
+        <div id="line2" class="status-line">Checking device security...</div>
+        <div id="line3" class="status-line">Analyzing system activity...</div>
+        <div id="line4" class="status-line">Threat level: CRITICAL</div>
+      </div>
+
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <p id="progressText">Scanning device: 0%</p>
+
+      <button id="continueButton" onclick="showPrankPage()" disabled>
+        Continue
+      </button>
+    </div>
+  </section>
+
+  <!-- Reveal page -->
+  <section id="prankPage" class="page">
+    <div class="prank-box">
+      <h2>😄 Just a Prank!</h2>
+
+      <p>
+        Your phone was not hacked. This was only a harmless visual joke.
+      </p>
+
+      <button onclick="showWarningPage()">Go Back</button>
+    </div>
+  </section>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const continueButton = document.getElementById("continueButton");
+
+    let progress = 0;
+
+    const scan = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 4;
+
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(scan);
+        continueButton.disabled = false;
+        continueButton.textContent = "Click to Reveal";
+      }
+
+      progressBar.style.width = `${progress}%`;
+      progressText.textContent = `Scanning device: ${progress}%`;
+    }, 500);
+
+    function showPrankPage() {
+      document.getElementById("warningPage").classList.remove("active");
+      document.getElementById("prankPage").classList.add("active");
+    }
+
+    function showWarningPage() {
+      document.getElementById("prankPage").classList.remove("active");
+      document.getElementById("warningPage").classList.add("active");
+    }
+  </script>
+</body>
+</html>
